@@ -3,8 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <!--
+      viewport-fit=cover lets the layout extend under notches so the safe-area
+      env() values become non-zero in the Capacitor WebView. Zoom is left
+      enabled deliberately: blocking it fails WCAG 1.4.4.
+    -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f8fb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#12172a" />
+    <meta
+      name="description"
+      content="Smart Finance — track, plan and grow your money in one secure place."
+    />
+    <title>Smart Finance</title>
+    <script>
+      // Applied before first paint so the initial render never flashes the
+      // wrong theme. Mirrors the logic in src/app/providers/theme-provider.tsx.
+      (function () {
+        try {
+          var stored = localStorage.getItem('smart-finance.theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || ((!stored || stored === 'system') && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          /* Storage can be blocked; the default light theme is fine. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
