@@ -39,7 +39,7 @@ export function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle className="text-xl">
-              You're signed in{user ? `, ${user.name.split(" ")[0]}` : ""}.
+              You're signed in{user ? `, ${user.firstName}` : ""}.
             </CardTitle>
             <CardDescription>
               Authentication works end to end. The dashboard feature plugs in here.
@@ -49,7 +49,7 @@ export function DashboardPage() {
             <CardContent>
               <dl className="grid gap-3 text-sm sm:grid-cols-[8rem_1fr]">
                 <dt className="text-muted-foreground">Name</dt>
-                <dd className="font-medium">{user.name}</dd>
+                <dd className="font-medium">{user.firstName} {user.lastName}</dd>
                 <dt className="text-muted-foreground">Email</dt>
                 <dd className="font-medium break-all">{user.email}</dd>
                 <dt className="text-muted-foreground">Phone</dt>

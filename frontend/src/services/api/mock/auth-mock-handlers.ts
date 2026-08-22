@@ -21,7 +21,8 @@ export const DEMO_ACCOUNT = {
 
 type MockAccount = {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   password: string;
@@ -33,7 +34,8 @@ const accounts = new Map<string, MockAccount>([
     DEMO_ACCOUNT.email,
     {
       id: "usr_demo_0001",
-      name: "Ada Sterling",
+      firstName: "Ada",
+      lastName: "Sterling",
       email: DEMO_ACCOUNT.email,
       phone: "+14155550142",
       password: DEMO_ACCOUNT.password,
@@ -65,7 +67,8 @@ function issueToken(accountId: string): string {
 function toPublicUser(account: MockAccount) {
   return {
     id: account.id,
-    name: account.name,
+    firstName: account.firstName,
+    lastName: account.lastName,
     email: account.email,
     phone: account.phone,
     createdAt: account.createdAt,
@@ -94,18 +97,20 @@ const handleSignup: MockHandler = async (request: MockRequest): Promise<MockResu
   await delay(LATENCY_MS);
 
   const email = readString(request.body, "email").toLowerCase();
-  const name = readString(request.body, "name");
+  const firstName = readString(request.body, "firstName");
+  const lastName = readString(request.body, "lastName");
   const phone = readString(request.body, "phone");
   const password = readString(request.body, "password");
 
-  if (!email || !name || !phone || !password) {
+  if (!email || !firstName || !lastName || !phone || !password) {
     return {
       status: 422,
       data: {
         message: "Please check the highlighted fields and try again.",
         code: "VALIDATION_ERROR",
         fieldErrors: {
-          ...(name ? {} : { name: "Full name is required." }),
+          ...(firstName ? {} : { firstName: "First name is required." }),
+          ...(lastName ? {} : { lastName: "Last name is required." }),
           ...(email ? {} : { email: "Email address is required." }),
           ...(phone ? {} : { phone: "Phone number is required." }),
           ...(password ? {} : { password: "Password is required." }),
@@ -127,7 +132,8 @@ const handleSignup: MockHandler = async (request: MockRequest): Promise<MockResu
 
   const account: MockAccount = {
     id: `usr_${Math.random().toString(36).slice(2, 10)}`,
-    name,
+    firstName,
+    lastName,
     email,
     phone,
     password,

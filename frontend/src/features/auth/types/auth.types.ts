@@ -1,7 +1,8 @@
 /** The authenticated user as the client is allowed to see it. */
 export interface AuthUser {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   createdAt: string;
@@ -24,7 +25,8 @@ export interface AuthSession {
 }
 
 export interface SignupRequest {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   password: string;

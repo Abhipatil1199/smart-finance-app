@@ -57,7 +57,8 @@ export function SignupPage() {
   const onSubmit = handleSubmit((values) => {
     signupMutation.mutate(
       {
-        name: values.name,
+        firstName: values.firstName,
+        lastName: values.lastName,
         email: values.email,
         phone: values.phone,
         password: values.password,
@@ -65,7 +66,8 @@ export function SignupPage() {
       {
         onError: (error) => {
           const handled = applyApiFieldErrors(setError, error, [
-            "name",
+            "firstName",
+            "lastName",
             "email",
             "phone",
             "password",
@@ -83,7 +85,7 @@ export function SignupPage() {
     return (
       <AuthLayout
         title="You're all set"
-        subtitle={`Welcome to Smart Finance, ${user.name.split(" ")[0]}.`}
+        subtitle={`Welcome to Smart Finance, ${user.firstName}.`}
       >
         <div className="flex flex-col items-center gap-5 py-2 text-center">
           <span className="grid size-14 place-items-center rounded-full bg-success/12 text-success">
@@ -131,19 +133,34 @@ export function SignupPage() {
       <form onSubmit={onSubmit} noValidate aria-busy={isBusy} className="flex flex-col gap-5">
         {formError ? <StatusMessage variant="error">{formError}</StatusMessage> : null}
 
-        <FormField name="name" label="Full name" error={errors.name}>
-          {(field) => (
-            <Input
-              {...field}
-              {...register("name")}
-              type="text"
-              autoComplete="name"
-              autoCapitalize="words"
-              placeholder="Ada Sterling"
-              disabled={isBusy}
-            />
-          )}
-        </FormField>
+        <div className="flex gap-4">
+          <FormField name="firstName" label="First name" error={errors.firstName} className="flex-1">
+            {(field) => (
+              <Input
+                {...field}
+                {...register("firstName")}
+                type="text"
+                autoComplete="given-name"
+                autoCapitalize="words"
+                placeholder="Ada"
+                disabled={isBusy}
+              />
+            )}
+          </FormField>
+          <FormField name="lastName" label="Last name" error={errors.lastName} className="flex-1">
+            {(field) => (
+              <Input
+                {...field}
+                {...register("lastName")}
+                type="text"
+                autoComplete="family-name"
+                autoCapitalize="words"
+                placeholder="Sterling"
+                disabled={isBusy}
+              />
+            )}
+          </FormField>
+        </div>
 
         <FormField name="email" label="Email address" error={errors.email}>
           {(field) => (

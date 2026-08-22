@@ -9,12 +9,19 @@ import { countDigits, normalizePhone } from "@/lib/sanitize";
  */
 const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M}'’.\- ]*$/u;
 
-const nameSchema = z
+const firstNameSchema = z
   .string()
   .trim()
-  .min(2, "Please enter your full name.")
-  .max(60, "Name must be 60 characters or fewer.")
-  .regex(NAME_PATTERN, "Name can only contain letters, spaces, hyphens and apostrophes.");
+  .min(2, "Please enter your first name.")
+  .max(60, "First name must be 60 characters or fewer.")
+  .regex(NAME_PATTERN, "First name can only contain letters, spaces, hyphens and apostrophes.");
+
+const lastNameSchema = z
+  .string()
+  .trim()
+  .min(2, "Please enter your last name.")
+  .max(60, "Last name must be 60 characters or fewer.")
+  .regex(NAME_PATTERN, "Last name can only contain letters, spaces, hyphens and apostrophes.");
 
 const emailSchema = z
   .string()
@@ -58,7 +65,8 @@ const passwordSchema = z
 
 export const signupSchema = z
   .object({
-    name: nameSchema,
+    firstName: firstNameSchema,
+    lastName: lastNameSchema,
     email: emailSchema,
     phone: phoneSchema,
     password: passwordSchema,
@@ -91,7 +99,8 @@ export type SigninFormInput = z.input<typeof signinSchema>;
 export type SigninFormValues = z.output<typeof signinSchema>;
 
 export const signupDefaultValues: SignupFormInput = {
-  name: "",
+  firstName: "",
+  lastName: "",
   email: "",
   phone: "",
   password: "",
