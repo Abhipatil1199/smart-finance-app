@@ -49,11 +49,11 @@ export async function login(req: Request, res: Response) {
   }
 
   try {
-    const user = await loginUser(result.data);
+    const loginResult = await loginUser(result.data);
 
     return res.status(200).json({
       message: "Login successful",
-      user,
+      ...loginResult,
     });
   } catch (error) {
     if (error instanceof Error && error.message === "INVALID_CREDENTIALS") {
