@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import prisma from "../lib/prisma";
 import type { SignupRequest, LoginRequest } from "../schemas/auth.schema";
 import { generateAccessToken } from "../utils/jwt";
+import { generateRefreshToken, hashRefreshToken } from "../utils/refresh-token";
 
 export async function signup(payload: SignupRequest) {
   const existingUser = await prisma.user.findUnique({
@@ -58,13 +59,61 @@ export async function login(payload: LoginRequest) {
 
   const accessToken = generateAccessToken(user.id);
 
+  const refreshToken = generateRefreshToken();
+
+  const refreshTokenHash = hashRefreshToken(refreshToken);
+
+  const refreshTokenExpiresAt = new Date();
+
+  refreshTokenExpiresAt.setDate(refreshTokenExpiresAt.getDate() + 30);
+
+  await prisma.refreshToken.create({
+    data: {
+      tokenHash: refreshTokenHash,
+      userId: user.id,
+      expiresAt: refreshTokenExpiresAt,
+    },
+  });
+
   return {
     accessToken,
+    refreshToken,
     user: {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
     },
+  };
+}
+
+export async function refreshAccessToken(refreshToken: string) {
+  const tokenHash = hashRefreshToken(refreshToken);
+
+  const storedToken = await prisma.refreshToken.findUnique({
+    where: {
+      tokenHash,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  if (!storedToken) {
+    throw new Error("INVALID_REFRESH_TOKEN");
+  }
+
+  if (storedToken.revokedAt) {
+    throw new Error("INVALID_REFRESH_TOKEN");
+  }
+
+  if (storedToken.expiresAt <= new Date()) {
+    throw new Error("INVALID_REFRESH_TOKEN");
+  }
+
+  const accessToken = generateAccessToken(storedToken.userId);
+
+  return {
+    accessToken,
   };
 }

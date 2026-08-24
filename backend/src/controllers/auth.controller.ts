@@ -1,7 +1,14 @@
 import type { Request, Response } from "express";
 
-import { signupSchema, loginSchema } from "../schemas/auth.schema";
-import { signup as signupUser } from "../services/auth.service";
+import {
+  signupSchema,
+  loginSchema,
+  refreshTokenSchema,
+} from "../schemas/auth.schema";
+import {
+  refreshAccessToken,
+  signup as signupUser,
+} from "../services/auth.service";
 import { login as loginUser } from "../services/auth.service";
 
 export async function signup(req: Request, res: Response) {
@@ -63,6 +70,35 @@ export async function login(req: Request, res: Response) {
     }
 
     console.error("Login error:", error);
+
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+}
+
+export async function refresh(req: Request, res: Response) {
+  const result = refreshTokenSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).json({
+      message: "Validation failed",
+      errors: result.error.flatten().fieldErrors,
+    });
+  }
+
+  try {
+    const resultData = await refreshAccessToken(result.data.refreshToken);
+
+    return res.status(200).json(resultData);
+  } catch (error) {
+    if (error instanceof Error && error.message === "INVALID_REFRESH_TOKEN") {
+      return res.status(401).json({
+        message: "Invalid or expired refresh token",
+      });
+    }
+
+    console.error("Refresh token error:", error);
 
     return res.status(500).json({
       message: "Something went wrong",
