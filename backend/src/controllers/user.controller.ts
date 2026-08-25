@@ -1,7 +1,7 @@
 import type { Response } from "express";
 
 import type { AuthenticatedRequest } from "../middleware/auth.middleware";
-import prisma from "../lib/prisma";
+import prisma from "../config/prisma";
 
 export async function getMe(req: AuthenticatedRequest, res: Response) {
   const userId = req.user!.id;

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import prisma from "../lib/prisma";
+import prisma from "../config/prisma";
 import type { SignupRequest, LoginRequest } from "../schemas/auth.schema";
 import { generateAccessToken } from "../utils/jwt";
 import { generateRefreshToken, hashRefreshToken } from "../utils/refresh-token";
@@ -94,9 +94,9 @@ export async function refreshAccessToken(refreshToken: string) {
     where: {
       tokenHash,
     },
-    include: {
-      user: true,
-    },
+    // include: {
+    //   user: true,
+    // },
   });
 
   if (!storedToken) {
@@ -111,9 +111,77 @@ export async function refreshAccessToken(refreshToken: string) {
     throw new Error("INVALID_REFRESH_TOKEN");
   }
 
-  const accessToken = generateAccessToken(storedToken.userId);
+  // const accessToken = generateAccessToken(storedToken.userId);
+  const newRefreshToken = generateRefreshToken();
+
+  const newRefreshTokenHash = hashRefreshToken(newRefreshToken);
+
+  const newRefreshTokenExpiresAt = new Date();
+
+  newRefreshTokenExpiresAt.setDate(newRefreshTokenExpiresAt.getDate() + 30);
+
+  const newAccessToken = generateAccessToken(storedToken.userId);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.refreshToken.update({
+      where: {
+        id: storedToken.id,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    await tx.refreshToken.create({
+      data: {
+        tokenHash: newRefreshTokenHash,
+        userId: storedToken.userId,
+        expiresAt: newRefreshTokenExpiresAt,
+      },
+    });
+  });
 
   return {
-    accessToken,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
   };
+}
+
+export async function logout(refreshToken: string) {
+  const tokenHash = hashRefreshToken(refreshToken);
+
+  const storedToken = await prisma.refreshToken.findUnique({
+    where: {
+      tokenHash,
+    },
+  });
+
+  if (!storedToken) {
+    return;
+  }
+
+  if (storedToken.revokedAt) {
+    return;
+  }
+
+  await prisma.refreshToken.update({
+    where: {
+      id: storedToken.id,
+    },
+    data: {
+      revokedAt: new Date(),
+    },
+  });
+}
+
+export async function logoutAll(userId: number) {
+  await prisma.refreshToken.updateMany({
+    where: {
+      userId,
+      revokedAt: null,
+    },
+    data: {
+      revokedAt: new Date(),
+    },
+  });
 }

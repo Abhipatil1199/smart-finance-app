@@ -8,8 +8,15 @@ import {
 import {
   refreshAccessToken,
   signup as signupUser,
+  logout as logoutUser,
+  logoutAll as logoutAllUser,
 } from "../services/auth.service";
 import { login as loginUser } from "../services/auth.service";
+import { AuthenticatedRequest } from "../middleware/auth.middleware";
+import {
+  REFRESH_TOKEN_COOKIE,
+  refreshTokenCookieOptions,
+} from "../config/cookie";
 
 export async function signup(req: Request, res: Response) {
   const result = signupSchema.safeParse(req.body);
@@ -58,9 +65,16 @@ export async function login(req: Request, res: Response) {
   try {
     const loginResult = await loginUser(result.data);
 
+    res.cookie(
+      REFRESH_TOKEN_COOKIE,
+      loginResult.refreshToken,
+      refreshTokenCookieOptions,
+    );
+
     return res.status(200).json({
       message: "Login successful",
-      ...loginResult,
+      accessToken: loginResult.accessToken,
+      user: loginResult.user,
     });
   } catch (error) {
     if (error instanceof Error && error.message === "INVALID_CREDENTIALS") {
@@ -78,19 +92,26 @@ export async function login(req: Request, res: Response) {
 }
 
 export async function refresh(req: Request, res: Response) {
-  const result = refreshTokenSchema.safeParse(req.body);
+  const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE];
 
-  if (!result.success) {
-    return res.status(400).json({
-      message: "Validation failed",
-      errors: result.error.flatten().fieldErrors,
+  if (!refreshToken) {
+    return res.status(401).json({
+      message: "Refresh token is missing",
     });
   }
 
   try {
-    const resultData = await refreshAccessToken(result.data.refreshToken);
+    const result = await refreshAccessToken(refreshToken);
 
-    return res.status(200).json(resultData);
+    res.cookie(
+      REFRESH_TOKEN_COOKIE,
+      result.refreshToken,
+      refreshTokenCookieOptions,
+    );
+
+    return res.status(200).json({
+      accessToken: result.accessToken,
+    });
   } catch (error) {
     if (error instanceof Error && error.message === "INVALID_REFRESH_TOKEN") {
       return res.status(401).json({
@@ -99,6 +120,44 @@ export async function refresh(req: Request, res: Response) {
     }
 
     console.error("Refresh token error:", error);
+
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+}
+
+export async function logout(req: Request, res: Response) {
+  try {
+    const refreshToken = req.cookies[REFRESH_TOKEN_COOKIE];
+
+    if (refreshToken) {
+      await logoutUser(refreshToken);
+    }
+
+    res.clearCookie(REFRESH_TOKEN_COOKIE, refreshTokenCookieOptions);
+
+    return res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+
+    return res.status(500).json({
+      message: "Something went wrong",
+    });
+  }
+}
+
+export async function logoutAll(req: AuthenticatedRequest, res: Response) {
+  try {
+    await logoutAllUser(req.user!.id);
+
+    return res.status(200).json({
+      message: "Logged out from all devices successfully",
+    });
+  } catch (error) {
+    console.error("Logout all error:", error);
 
     return res.status(500).json({
       message: "Something went wrong",
