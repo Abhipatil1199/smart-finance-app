@@ -1,3 +1,5 @@
+import { LogOutIcon, MonitorSmartphoneIcon } from "lucide-react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -5,6 +7,7 @@ import { BrandMark } from "@/components/common/brand-mark";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import { useSignoutMutation } from "@/features/auth/hooks/use-signout-mutation";
+import { useLogoutAllMutation } from "@/features/auth/hooks/use-logout-all-mutation";
 
 /**
  * Placeholder landing surface so the auth flow has somewhere to finish.
@@ -13,6 +16,9 @@ import { useSignoutMutation } from "@/features/auth/hooks/use-signout-mutation";
 export function DashboardPage() {
   const { user } = useAuth();
   const signoutMutation = useSignoutMutation();
+  const logoutAllMutation = useLogoutAllMutation();
+
+  const isBusy = signoutMutation.isPending || logoutAllMutation.isPending;
 
   return (
     <div className="min-h-screen-safe bg-background px-safe">
@@ -26,10 +32,10 @@ export function DashboardPage() {
             type="button"
             variant="outline"
             size="xl"
-            disabled={signoutMutation.isPending}
+            disabled={isBusy}
             onClick={() => signoutMutation.mutate()}
           >
-            {signoutMutation.isPending ? <Spinner /> : null}
+            {signoutMutation.isPending ? <Spinner /> : <LogOutIcon className="size-4" />}
             Sign out
           </Button>
         </div>
@@ -52,11 +58,41 @@ export function DashboardPage() {
                 <dd className="font-medium">{user.firstName} {user.lastName}</dd>
                 <dt className="text-muted-foreground">Email</dt>
                 <dd className="font-medium break-all">{user.email}</dd>
-                <dt className="text-muted-foreground">Phone</dt>
-                <dd className="font-medium">{user.phone}</dd>
+                <dt className="text-muted-foreground">Member since</dt>
+                <dd className="font-medium">
+                  {new Date(user.createdAt).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </dd>
               </dl>
             </CardContent>
           ) : null}
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Session Management</CardTitle>
+            <CardDescription>
+              Sign out from all devices at once. This revokes every active session.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={isBusy}
+              onClick={() => logoutAllMutation.mutate()}
+            >
+              {logoutAllMutation.isPending ? (
+                <Spinner />
+              ) : (
+                <MonitorSmartphoneIcon className="size-4" />
+              )}
+              Sign out all devices
+            </Button>
+          </CardContent>
         </Card>
       </main>
     </div>

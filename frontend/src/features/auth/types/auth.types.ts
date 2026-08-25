@@ -1,34 +1,39 @@
 /** The authenticated user as the client is allowed to see it. */
 export interface AuthUser {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
   createdAt: string;
 }
 
-/**
- * Present only while the API returns tokens in the response body. Under the
- * httpOnly-cookie strategy the server omits this and sets a cookie instead,
- * which is why every field is optional.
- */
-export interface AuthTokens {
-  accessToken?: string;
-  refreshToken?: string;
-  expiresIn?: number;
+/** POST /api/auth/register → { message, user } */
+export interface SignupResponse {
+  message: string;
+  user: AuthUser;
 }
 
-export interface AuthSession {
+/** POST /api/auth/login → { message, accessToken, user } */
+export interface LoginResponse {
+  message: string;
+  accessToken: string;
   user: AuthUser;
-  tokens?: AuthTokens;
+}
+
+/** POST /api/auth/refresh → { accessToken } */
+export interface RefreshResponse {
+  accessToken: string;
+}
+
+/** GET /api/users/me → { user } */
+export interface GetMeResponse {
+  user: AuthUser;
 }
 
 export interface SignupRequest {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
   password: string;
 }
 
@@ -42,4 +47,4 @@ export interface SigninRequest {
   rememberMe?: boolean;
 }
 
-export type AuthStatus = "anonymous" | "authenticated";
+export type AuthStatus = "anonymous" | "authenticated" | "loading";

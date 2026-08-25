@@ -1,13 +1,15 @@
 import { createContext } from "react";
 
-import type { AuthSession, AuthStatus, AuthUser } from "@/features/auth/types/auth.types";
+import type { AuthStatus, AuthUser } from "@/features/auth/types/auth.types";
 
 export interface AuthContextValue {
   user: AuthUser | null;
   status: AuthStatus;
   isAuthenticated: boolean;
-  /** Persists a session returned by signup or signin. */
-  startSession: (session: AuthSession) => void;
+  /** True while the app is attempting to rehydrate a session on boot. */
+  isLoading: boolean;
+  /** Persists an access token and user returned by login or refresh. */
+  startSession: (accessToken: string, user: AuthUser) => void;
   /** Clears the token, the cached user and any server state held for them. */
   endSession: () => void;
 }

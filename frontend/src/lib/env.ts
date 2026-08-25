@@ -34,12 +34,6 @@ export const env = {
   apiUrl: readString(import.meta.env.VITE_API_URL, "http://localhost:5000"),
   apiTimeoutMs: readPositiveInt(import.meta.env.VITE_API_TIMEOUT_MS, 15_000),
 
-  /**
-   * Serves the auth endpoints from an in-browser fixture. Defaults to on in
-   * development so the screens are usable before the backend exists; delete
-   * the flag (or set it to false) once the real API is reachable.
-   */
-  enableMockApi: readBoolean(import.meta.env.VITE_ENABLE_MOCK_API, import.meta.env.DEV),
 
   authTokenStrategy: readTokenStrategy(import.meta.env.VITE_AUTH_TOKEN_STRATEGY),
 

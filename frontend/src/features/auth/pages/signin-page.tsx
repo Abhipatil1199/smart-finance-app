@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRightIcon } from "lucide-react";
 
-import { env } from "@/lib/env";
+
 import { applyApiFieldErrors, getFormLevelError } from "@/lib/form-errors";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -158,13 +158,6 @@ export function SigninPage() {
           )}
         </Button>
 
-        {env.enableMockApi ? (
-          <p className="rounded-lg bg-muted/60 px-3 py-2 text-center text-xs leading-relaxed text-muted-foreground">
-            Demo mode — no backend required. Sign in with{" "}
-            <span className="font-medium text-foreground">demo@smartfinance.app</span> /{" "}
-            <span className="font-medium text-foreground">Password@123</span>
-          </p>
-        ) : null}
       </form>
     </AuthLayout>
   );

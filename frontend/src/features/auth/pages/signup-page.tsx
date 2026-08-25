@@ -60,7 +60,6 @@ export function SignupPage() {
         firstName: values.firstName,
         lastName: values.lastName,
         email: values.email,
-        phone: values.phone,
         password: values.password,
       },
       {
@@ -69,7 +68,6 @@ export function SignupPage() {
             "firstName",
             "lastName",
             "email",
-            "phone",
             "password",
           ]);
           if (handled) setFocus("email");
@@ -94,19 +92,19 @@ export function SignupPage() {
           <div role="status" className="flex flex-col gap-1.5">
             <p className="font-medium text-foreground">Your account is ready</p>
             <p className="text-sm leading-relaxed text-pretty text-muted-foreground">
-              We sent a verification link to{" "}
-              <span className="font-medium text-foreground">{user.email}</span>. Confirm it
-              whenever you're ready — you can start exploring now.
+              Your account has been created with{" "}
+              <span className="font-medium text-foreground">{user.email}</span>.
+              Sign in to get started.
             </p>
           </div>
           <Button
             type="button"
             size="xl"
             autoFocus
-            onClick={() => navigate(ROUTES.dashboard, { replace: true })}
+            onClick={() => navigate(ROUTES.signin, { replace: true })}
             className="w-full"
           >
-            Continue to dashboard
+            Continue to sign in
             <ArrowRightIcon aria-hidden="true" data-icon="inline-end" />
           </Button>
         </div>
@@ -174,25 +172,6 @@ export function SignupPage() {
               autoCorrect="off"
               spellCheck={false}
               placeholder="you@example.com"
-              disabled={isBusy}
-            />
-          )}
-        </FormField>
-
-        <FormField
-          name="phone"
-          label="Phone number"
-          error={errors.phone}
-          description="Used to confirm large transfers and recover your account."
-        >
-          {(field) => (
-            <Input
-              {...field}
-              {...register("phone")}
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="+1 415 555 0142"
               disabled={isBusy}
             />
           )}
