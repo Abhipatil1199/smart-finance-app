@@ -5,6 +5,8 @@ import { RouteError } from "@/app/router/route-error";
 import { RouteFallback } from "@/app/router/route-fallback";
 import { RequireAuth } from "@/features/auth/components/require-auth";
 
+import { AppLayout } from "@/layouts/app-layout";
+
 /**
  * Route table, kept separate from router creation so it can be matched and
  * inspected without a DOM (and reused with a memory router in tests).
@@ -23,13 +25,15 @@ export const routes: RouteObject[] = [
       {
         index: true,
         lazy: async () => ({
-          Component: (await import("@/features/auth/pages/signin-page")).SigninPage,
+          Component: (await import("@/features/auth/pages/signin-page"))
+            .SigninPage,
         }),
       },
       {
         path: "signup",
         lazy: async () => ({
-          Component: (await import("@/features/auth/pages/signup-page")).SignupPage,
+          Component: (await import("@/features/auth/pages/signup-page"))
+            .SignupPage,
         }),
       },
       // `/signin` is a natural thing to type or bookmark; keep it working
@@ -39,10 +43,23 @@ export const routes: RouteObject[] = [
         Component: RequireAuth,
         children: [
           {
-            path: "dashboard",
-            lazy: async () => ({
-              Component: (await import("@/features/dashboard/pages/dashboard-page")).DashboardPage,
-            }),
+            Component: AppLayout,
+            children: [
+              {
+                path: "dashboard",
+                lazy: async () => ({
+                  Component: (await import("@/features/income/pages/income-page"))
+                    .IncomePage,
+                }),
+              },
+              {
+                path: "income",
+                lazy: async () => ({
+                  Component: (await import("@/features/income/pages/income-page"))
+                    .IncomePage,
+                }),
+              },
+            ],
           },
         ],
       },

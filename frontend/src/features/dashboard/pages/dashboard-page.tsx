@@ -1,6 +1,18 @@
-import { LogOutIcon, MonitorSmartphoneIcon } from "lucide-react";
+import {
+  LogOutIcon,
+  MonitorSmartphoneIcon,
+  WalletIcon,
+  ArrowRightIcon,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { BrandMark } from "@/components/common/brand-mark";
@@ -35,7 +47,11 @@ export function DashboardPage() {
             disabled={isBusy}
             onClick={() => signoutMutation.mutate()}
           >
-            {signoutMutation.isPending ? <Spinner /> : <LogOutIcon className="size-4" />}
+            {signoutMutation.isPending ? (
+              <Spinner />
+            ) : (
+              <LogOutIcon className="size-4" />
+            )}
             Sign out
           </Button>
         </div>
@@ -48,14 +64,17 @@ export function DashboardPage() {
               You're signed in{user ? `, ${user.firstName}` : ""}.
             </CardTitle>
             <CardDescription>
-              Authentication works end to end. The dashboard feature plugs in here.
+              Authentication works end to end. The dashboard feature plugs in
+              here.
             </CardDescription>
           </CardHeader>
           {user ? (
             <CardContent>
               <dl className="grid gap-3 text-sm sm:grid-cols-[8rem_1fr]">
                 <dt className="text-muted-foreground">Name</dt>
-                <dd className="font-medium">{user.firstName} {user.lastName}</dd>
+                <dd className="font-medium">
+                  {user.firstName} {user.lastName}
+                </dd>
                 <dt className="text-muted-foreground">Email</dt>
                 <dd className="font-medium break-all">{user.email}</dd>
                 <dt className="text-muted-foreground">Member since</dt>
@@ -75,7 +94,8 @@ export function DashboardPage() {
           <CardHeader>
             <CardTitle className="text-lg">Session Management</CardTitle>
             <CardDescription>
-              Sign out from all devices at once. This revokes every active session.
+              Sign out from all devices at once. This revokes every active
+              session.
             </CardDescription>
           </CardHeader>
           <CardContent>
