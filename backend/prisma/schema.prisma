@@ -39,12 +39,20 @@ model RefreshToken {
   @@index([userId])
 }
 
+enum IncomeFrequency {
+  ONE_TIME
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
 model Income {
   id        Int      @id @default(autoincrement())
   userId    Int
   amount    Decimal  @db.Decimal(12, 2)
   source    String
-  frequency String
+  frequency IncomeFrequency
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
