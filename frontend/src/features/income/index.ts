@@ -4,7 +4,11 @@
  */
 export { IncomePage } from "@/features/income/pages/income-page";
 export { useIncomeState } from "@/features/income/hooks/use-income-state";
+export * from "@/features/income/api/income.api";
 export type {
+  Income,
+  CreateIncomeRequest,
+  UpdateIncomeRequest,
   IncomeRecord,
   IncomeSummary,
   IncomeSource,

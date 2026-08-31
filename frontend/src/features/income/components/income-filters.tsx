@@ -57,10 +57,11 @@ export function IncomeFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All</SelectItem>
-          <SelectItem value="monthly">Monthly</SelectItem>
-          <SelectItem value="weekly">Weekly</SelectItem>
-          <SelectItem value="one-time">One-time</SelectItem>
-          <SelectItem value="yearly">Yearly</SelectItem>
+          <SelectItem value="MONTHLY">Monthly</SelectItem>
+          <SelectItem value="WEEKLY">Weekly</SelectItem>
+          <SelectItem value="ONE_TIME">One-time</SelectItem>
+          <SelectItem value="YEARLY">Yearly</SelectItem>
+          <SelectItem value="DAILY">Daily</SelectItem>
         </SelectContent>
       </Select>
 

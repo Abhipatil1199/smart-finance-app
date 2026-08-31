@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { BrandMark } from "@/components/common/brand-mark";
-import { ThemeToggle } from "@/components/common/theme-toggle";
 import { IncomeHeader } from "@/features/income/components/income-header";
 import { IncomeSummary } from "@/features/income/components/income-summary";
 import { IncomeTrendChart } from "@/features/income/components/income-trend-chart";
@@ -12,6 +10,7 @@ import { IncomeFormDialog } from "@/features/income/components/income-form-dialo
 import { DeleteConfirmDialog } from "@/features/income/components/delete-confirm-dialog";
 import { useIncomeState } from "@/features/income/hooks/use-income-state";
 import type { IncomeRecord } from "@/features/income/types/income.types";
+import { Spinner } from "@/components/ui/spinner";
 
 /**
  * Income page — the main entry point for the income module.
@@ -32,6 +31,7 @@ export function IncomePage() {
     summary,
     sources,
     trend,
+    isLoading,
   } = useIncomeState();
 
   /* ── Dialog state ──────────────────────────────────────────────────── */
@@ -109,11 +109,17 @@ export function IncomePage() {
           />
 
           {/* Mobile-only cards view */}
-          <IncomeCardList
-            records={records}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center p-10">
+              <Spinner className="size-8 text-primary" />
+            </div>
+          ) : (
+            <IncomeCardList
+              records={records}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          )}
         </div>
 
         <IncomeFormDialog

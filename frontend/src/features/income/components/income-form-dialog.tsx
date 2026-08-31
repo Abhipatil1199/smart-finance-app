@@ -63,7 +63,7 @@ export function IncomeFormDialog({
     defaultValues: {
       source: "",
       amount: "",
-      frequency: "monthly",
+      frequency: "MONTHLY",
       category: "salary",
       date: new Date().toISOString().split("T")[0],
       description: "",
@@ -86,7 +86,7 @@ export function IncomeFormDialog({
         reset({
           source: "",
           amount: "",
-          frequency: "monthly",
+          frequency: "MONTHLY",
           category: "salary",
           date: new Date().toISOString().split("T")[0],
           description: "",
@@ -111,7 +111,7 @@ export function IncomeFormDialog({
         </DialogHeader>
 
         <form
-          onSubmit={handleSubmit((values) => {
+          onSubmit={handleSubmit((values: IncomeFormValues) => {
             onSubmit(values);
             onOpenChange(false);
           })}
@@ -162,10 +162,11 @@ export function IncomeFormDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="one-time">One-time</SelectItem>
-                    <SelectItem value="yearly">Yearly</SelectItem>
+                    <SelectItem value="MONTHLY">Monthly</SelectItem>
+                    <SelectItem value="WEEKLY">Weekly</SelectItem>
+                    <SelectItem value="ONE_TIME">One-time</SelectItem>
+                    <SelectItem value="YEARLY">Yearly</SelectItem>
+                    <SelectItem value="DAILY">Daily</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

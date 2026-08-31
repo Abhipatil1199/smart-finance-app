@@ -1,12 +1,40 @@
 /**
  * Income domain types.
- * Kept in sync with the backend `income.schema` shapes; the API layer will
- * eventually map server responses into these, but for now mock data uses them
- * directly.
+ * Kept in sync with the backend `income.schema` shapes.
  */
 
-export type IncomeFrequency = "monthly" | "weekly" | "one-time" | "yearly";
+export type IncomeFrequency =
+  | "ONE_TIME"
+  | "DAILY"
+  | "WEEKLY"
+  | "MONTHLY"
+  | "YEARLY";
 
+export interface Income {
+  id: number;
+  amount: number;
+  source: string;
+  frequency: IncomeFrequency;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateIncomeRequest {
+  amount: number;
+  source: string;
+  frequency: IncomeFrequency;
+  date: string;
+}
+
+export interface UpdateIncomeRequest {
+  amount?: number;
+  source?: string;
+  frequency?: IncomeFrequency;
+  date?: string;
+}
+
+// Keep the existing types used by the mock UI/analytics components to ensure compilation
 export type IncomeCategory =
   | "salary"
   | "freelance"

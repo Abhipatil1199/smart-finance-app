@@ -3,6 +3,7 @@ import type {
   IncomeSummary,
   IncomeSource,
   IncomeTrendPoint,
+  IncomeFrequency,
 } from "@/features/income/types/income.types";
 
 /** Category → emoji mapping for visual identity in lists/cards. */
@@ -30,11 +31,12 @@ export const CATEGORY_LABELS: Record<string, string> = {
 };
 
 /** Frequency → human label. */
-export const FREQUENCY_LABELS: Record<string, string> = {
-  monthly: "Monthly",
-  weekly: "Weekly",
-  "one-time": "One-time",
-  yearly: "Yearly",
+export const FREQUENCY_LABELS: Record<IncomeFrequency, string> = {
+  MONTHLY: "Monthly",
+  WEEKLY: "Weekly",
+  ONE_TIME: "One-time",
+  YEARLY: "Yearly",
+  DAILY: "Daily",
 };
 
 export const MOCK_RECORDS: IncomeRecord[] = [
@@ -42,7 +44,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_001",
     source: "Salary — Acme Corp",
     amount: 50000,
-    frequency: "monthly",
+    frequency: "MONTHLY",
     category: "salary",
     date: "2026-08-28T00:00:00Z",
     description: "Monthly salary credited",
@@ -51,7 +53,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_002",
     source: "Freelance — UI Design",
     amount: 15000,
-    frequency: "one-time",
+    frequency: "ONE_TIME",
     category: "freelance",
     date: "2026-08-22T00:00:00Z",
     description: "Landing page redesign for startup",
@@ -60,7 +62,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_003",
     source: "Performance Bonus",
     amount: 20000,
-    frequency: "one-time",
+    frequency: "ONE_TIME",
     category: "bonus",
     date: "2026-08-15T00:00:00Z",
     description: "Q2 performance bonus",
@@ -69,7 +71,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_004",
     source: "Stock Dividends",
     amount: 8500,
-    frequency: "yearly",
+    frequency: "YEARLY",
     category: "investment",
     date: "2026-08-10T00:00:00Z",
     description: "Annual dividend payout",
@@ -78,7 +80,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_005",
     source: "Apartment Rent",
     amount: 22000,
-    frequency: "monthly",
+    frequency: "MONTHLY",
     category: "rental",
     date: "2026-08-01T00:00:00Z",
     description: "Tenant rent for flat #302",
@@ -87,7 +89,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_006",
     source: "Birthday Gift",
     amount: 5000,
-    frequency: "one-time",
+    frequency: "ONE_TIME",
     category: "gift",
     date: "2026-07-28T00:00:00Z",
   },
@@ -95,7 +97,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_007",
     source: "Salary — Acme Corp",
     amount: 50000,
-    frequency: "monthly",
+    frequency: "MONTHLY",
     category: "salary",
     date: "2026-07-28T00:00:00Z",
     description: "Monthly salary credited",
@@ -104,7 +106,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_008",
     source: "Freelance — Mobile App",
     amount: 35000,
-    frequency: "one-time",
+    frequency: "ONE_TIME",
     category: "freelance",
     date: "2026-07-15T00:00:00Z",
     description: "React Native app for local business",
@@ -113,7 +115,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_009",
     source: "Online Course Sales",
     amount: 12000,
-    frequency: "monthly",
+    frequency: "MONTHLY",
     category: "business",
     date: "2026-07-05T00:00:00Z",
     description: "Udemy course revenue",
@@ -122,7 +124,7 @@ export const MOCK_RECORDS: IncomeRecord[] = [
     id: "inc_010",
     source: "Apartment Rent",
     amount: 22000,
-    frequency: "monthly",
+    frequency: "MONTHLY",
     category: "rental",
     date: "2026-07-01T00:00:00Z",
     description: "Tenant rent for flat #302",
