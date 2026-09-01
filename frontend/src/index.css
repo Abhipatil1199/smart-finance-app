@@ -223,6 +223,37 @@
     }
 }
 
+/*
+ * Bento card system for the income dashboard.
+ * Matches the Stitch "Income Dashboard Centered Add Button" design.
+ */
+@layer components {
+  .bento-card {
+    background-color: oklch(from var(--card) l c h);
+    border: 1px solid oklch(from var(--border) l c h / 60%);
+    box-shadow: 0px 4px 12px oklch(from var(--foreground) l c h / 5%);
+    border-radius: var(--radius-2xl);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .bento-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 8px 20px oklch(from var(--foreground) l c h / 8%);
+  }
+  .bento-card-static {
+    background-color: oklch(from var(--card) l c h);
+    border: 1px solid oklch(from var(--border) l c h / 60%);
+    border-radius: var(--radius-2xl);
+    transition: background-color 0.15s ease;
+  }
+  .bento-card-static:hover {
+    background-color: oklch(from var(--muted) l c h / 50%);
+  }
+  .tag-emerald {
+    background-color: oklch(from var(--success) l c h / 12%);
+    color: oklch(from var(--success) l c h);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

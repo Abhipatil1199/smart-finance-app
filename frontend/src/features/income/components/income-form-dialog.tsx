@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,8 +56,7 @@ export function IncomeFormDialog({
     register,
     handleSubmit,
     reset,
-    setValue,
-    watch,
+    control,
     formState: { errors },
   } = useForm<IncomeFormValues>({
     defaultValues: {
@@ -94,9 +93,6 @@ export function IncomeFormDialog({
       }
     }
   }, [open, editRecord, reset]);
-
-  const frequencyValue = watch("frequency");
-  const categoryValue = watch("category");
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -154,44 +150,50 @@ export function IncomeFormDialog({
               {/* Frequency */}
               <div className="flex flex-col gap-1.5">
                 <Label>Frequency</Label>
-                <Select
-                  value={frequencyValue}
-                  onValueChange={(val) => setValue("frequency", val as IncomeFrequency)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="MONTHLY">Monthly</SelectItem>
-                    <SelectItem value="WEEKLY">Weekly</SelectItem>
-                    <SelectItem value="ONE_TIME">One-time</SelectItem>
-                    <SelectItem value="YEARLY">Yearly</SelectItem>
-                    <SelectItem value="DAILY">Daily</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  name="frequency"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="MONTHLY">Monthly</SelectItem>
+                        <SelectItem value="WEEKLY">Weekly</SelectItem>
+                        <SelectItem value="ONE_TIME">One-time</SelectItem>
+                        <SelectItem value="YEARLY">Yearly</SelectItem>
+                        <SelectItem value="DAILY">Daily</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
 
               {/* Category */}
               <div className="flex flex-col gap-1.5">
                 <Label>Category</Label>
-                <Select
-                  value={categoryValue}
-                  onValueChange={(val) => setValue("category", val as IncomeCategory)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="salary">💼 Salary</SelectItem>
-                    <SelectItem value="freelance">💻 Freelance</SelectItem>
-                    <SelectItem value="business">🏢 Business</SelectItem>
-                    <SelectItem value="investment">📈 Investment</SelectItem>
-                    <SelectItem value="rental">🏠 Rental</SelectItem>
-                    <SelectItem value="gift">🎁 Gift</SelectItem>
-                    <SelectItem value="bonus">🎯 Bonus</SelectItem>
-                    <SelectItem value="other">💰 Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Controller
+                  name="category"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="salary">💼 Salary</SelectItem>
+                        <SelectItem value="freelance">💻 Freelance</SelectItem>
+                        <SelectItem value="business">🏢 Business</SelectItem>
+                        <SelectItem value="investment">📈 Investment</SelectItem>
+                        <SelectItem value="rental">🏠 Rental</SelectItem>
+                        <SelectItem value="gift">🎁 Gift</SelectItem>
+                        <SelectItem value="bonus">🎯 Bonus</SelectItem>
+                        <SelectItem value="other">💰 Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
             </div>
 

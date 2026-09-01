@@ -48,26 +48,24 @@ function SelectContent({
   ...props
 }: SelectPrimitive.Popup.Props) {
   return (
-    <SelectPrimitive.Portal>
-      <SelectPrimitive.Positioner sideOffset={6} align="start">
-        <SelectPrimitive.Popup
-          data-slot="select-content"
-          className={cn(
-            "z-[100] min-w-[var(--anchor-width)] overflow-hidden rounded-xl border border-border bg-popover text-popover-foreground shadow-lg",
-            // Enter / exit
-            "data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
-            "data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
-            "transition-all duration-150 origin-[var(--transform-origin)]",
-            className
-          )}
-          {...props}
-        >
-          <div className="max-h-[min(24rem,var(--available-height))] overflow-y-auto p-1">
-            {children}
-          </div>
-        </SelectPrimitive.Popup>
-      </SelectPrimitive.Positioner>
-    </SelectPrimitive.Portal>
+    <SelectPrimitive.Positioner sideOffset={6} align="start">
+      <SelectPrimitive.Popup
+        data-slot="select-content"
+        className={cn(
+          "z-[100] min-w-[var(--anchor-width)] overflow-hidden rounded-xl border border-border bg-popover text-popover-foreground shadow-lg",
+          // Enter / exit
+          "data-[starting-style]:scale-95 data-[starting-style]:opacity-0",
+          "data-[ending-style]:scale-95 data-[ending-style]:opacity-0",
+          "transition-all duration-150 origin-[var(--transform-origin)]",
+          className
+        )}
+        {...props}
+      >
+        <div className="max-h-[min(24rem,var(--available-height))] overflow-y-auto p-1">
+          {children}
+        </div>
+      </SelectPrimitive.Popup>
+    </SelectPrimitive.Positioner>
   );
 }
 

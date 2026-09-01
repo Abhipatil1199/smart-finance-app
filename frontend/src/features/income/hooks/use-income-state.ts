@@ -13,16 +13,13 @@ import {
   MOCK_TREND,
 } from "@/features/income/data/income.mock";
 import type { SortOption } from "@/features/income/components/income-filters";
-import { useIncomesQuery } from "./use-incomes-query";
-import { useCreateIncomeMutation } from "./use-create-income-mutation";
-import { useUpdateIncomeMutation } from "./use-update-income-mutation";
-import { useDeleteIncomeMutation } from "./use-delete-income-mutation";
+import { useIncomes, useCreateIncome, useUpdateIncome, useDeleteIncome } from "./useIncome";
 
 export function useIncomeState() {
-  const { data: incomes = [], isLoading, isError } = useIncomesQuery();
-  const createMutation = useCreateIncomeMutation();
-  const updateMutation = useUpdateIncomeMutation();
-  const deleteMutation = useDeleteIncomeMutation();
+  const { data: incomes = [], isLoading, isError } = useIncomes();
+  const createMutation = useCreateIncome();
+  const updateMutation = useUpdateIncome();
+  const deleteMutation = useDeleteIncome();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [frequencyFilter, setFrequencyFilter] = useState<IncomeFrequency | "all">("all");
