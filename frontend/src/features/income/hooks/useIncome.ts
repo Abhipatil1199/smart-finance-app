@@ -52,7 +52,11 @@ export function useCreateIncome(): UseMutationResult<Income, ApiError, CreateInc
 
   return useMutation<Income, ApiError, CreateIncomeRequest>({
     mutationFn: createIncome,
-    onSuccess: () => {
+    onSuccess: (newIncome) => {
+      // Instantly update the cache so the UI reflects the new record immediately
+      queryClient.setQueryData<Income[]>(incomeKeys.all, (old) => {
+        return old ? [...old, newIncome] : [newIncome];
+      });
       queryClient.invalidateQueries({ queryKey: incomeKeys.all });
     },
   });
@@ -67,9 +71,15 @@ export function useUpdateIncome(): UseMutationResult<
 
   return useMutation<Income, ApiError, { id: number; data: UpdateIncomeRequest }>({
     mutationFn: ({ id, data }) => updateIncome(id, data),
-    onSuccess: (_, variables) => {
+    onSuccess: (updatedIncome, variables) => {
+      // Instantly update the cache
+      queryClient.setQueryData<Income[]>(incomeKeys.all, (old) => {
+        if (!old) return old;
+        return old.map((inc) => (inc.id === variables.id ? updatedIncome : inc));
+      });
+      queryClient.setQueryData(incomeKeys.detail(variables.id), updatedIncome);
+      
       queryClient.invalidateQueries({ queryKey: incomeKeys.all });
-      queryClient.invalidateQueries({ queryKey: incomeKeys.detail(variables.id) });
     },
   });
 }
@@ -80,6 +90,12 @@ export function useDeleteIncome(): UseMutationResult<void, ApiError, number> {
   return useMutation<void, ApiError, number>({
     mutationFn: deleteIncome,
     onSuccess: (_, deletedId) => {
+      // Instantly remove from the cache to prevent race conditions with backend refetch
+      queryClient.setQueryData<Income[]>(incomeKeys.all, (old) => {
+        if (!old) return old;
+        return old.filter((inc) => inc.id !== deletedId);
+      });
+      
       queryClient.invalidateQueries({ queryKey: incomeKeys.all });
       queryClient.removeQueries({ queryKey: incomeKeys.detail(deletedId) });
     },

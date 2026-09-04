@@ -41,14 +41,22 @@ export async function signin(payload: SigninRequest): Promise<LoginResponse> {
   return data;
 }
 
+let refreshPromise: Promise<RefreshResponse> | null = null;
+
 /**
  * Calls the refresh endpoint. The httpOnly `refreshToken` cookie is sent
  * automatically by the browser. Returns a fresh access token and rotates
  * the cookie.
  */
-export async function refreshToken(): Promise<RefreshResponse> {
-  const { data } = await api.post<RefreshResponse>(AUTH_ENDPOINTS.refresh);
-  return data;
+export function refreshToken(): Promise<RefreshResponse> {
+  if (!refreshPromise) {
+    refreshPromise = api.post<RefreshResponse>(AUTH_ENDPOINTS.refresh)
+      .then((res) => res.data)
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+  return refreshPromise;
 }
 
 export async function signout(): Promise<void> {

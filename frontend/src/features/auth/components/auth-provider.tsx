@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { tokenStorage } from "@/services/auth/token-storage";
-import { AuthContext, type AuthContextValue } from "@/features/auth/hooks/auth-context";
+import {
+  AuthContext,
+  type AuthContextValue,
+} from "@/features/auth/hooks/auth-context";
 import { refreshToken, fetchCurrentUser } from "@/features/auth/api/auth.api";
 import type { AuthUser } from "@/features/auth/types/auth.types";
 
@@ -19,11 +22,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const startSession = useCallback((accessToken: string, authUser: AuthUser) => {
-    tokenStorage.setAccessToken(accessToken);
-    setUser(authUser);
-    setIsLoading(false);
-  }, []);
+  const startSession = useCallback(
+    (accessToken: string, authUser: AuthUser) => {
+      tokenStorage.setAccessToken(accessToken);
+      setUser(authUser);
+      setIsLoading(false);
+    },
+    [],
+  );
 
   const endSession = useCallback(() => {
     tokenStorage.clear();
@@ -76,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       startSession,
       endSession,
     }),
-    [user, isLoading, startSession, endSession]
+    [user, isLoading, startSession, endSession],
   );
 
   return <AuthContext value={value}>{children}</AuthContext>;
