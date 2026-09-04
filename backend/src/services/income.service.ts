@@ -74,9 +74,11 @@ export async function deleteIncome(userId: number, incomeId: number) {
     return false;
   }
 
-  await prisma.income.delete({
+  const deleted = await prisma.income.delete({
     where: {
       id: incomeId,
     },
   });
+
+  return deleted;
 }
