@@ -51,9 +51,11 @@ model Income {
   id        Int      @id @default(autoincrement())
   userId    Int
   amount    Decimal  @db.Decimal(12, 2)
-  source    String
-  frequency IncomeFrequency
-  date      DateTime
+  source      String
+  description String?
+  type        String          @default("income")
+  frequency   IncomeFrequency
+  date        DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -68,6 +70,7 @@ model Expense {
   amount      Decimal  @db.Decimal(12, 2)
   category    String
   description String?
+  type        String   @default("expense")
   date        DateTime
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

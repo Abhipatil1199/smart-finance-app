@@ -17,6 +17,15 @@ export const createIncomeSchema = z.object({
     .min(1, "Income source is required")
     .max(100, "Income source must not exceed 100 characters"),
 
+  description: z
+    .string()
+    .trim()
+    .max(255, "Description must not exceed 255 characters")
+    .optional()
+    .nullable(),
+
+  type: z.string().trim().default("income"),
+
   frequency: incomeFrequencySchema,
 
   date: z.coerce.date(),

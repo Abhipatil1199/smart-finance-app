@@ -10,6 +10,8 @@ export async function createIncome(userId: number, payload: CreateIncomeInput) {
       userId,
       amount: payload.amount,
       source: payload.source,
+      description: payload.description,
+      type: payload.type ?? "income",
       frequency: payload.frequency,
       date: payload.date,
     },
