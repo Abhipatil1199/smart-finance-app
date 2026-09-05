@@ -1,9 +1,9 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
-  WalletIcon,
-  LayoutDashboardIcon,
-  UserIcon,
+  HomeIcon,
   PieChartIcon,
+  FileBarChartIcon,
+  UserIcon,
   PlusIcon,
 } from "lucide-react";
 
@@ -12,14 +12,14 @@ import { ROUTES } from "@/app/router/paths";
 
 const LEFT_ITEMS = [
   {
-    name: "Dashboard",
+    name: "Home",
     path: ROUTES.dashboard,
-    icon: LayoutDashboardIcon,
+    icon: HomeIcon,
   },
   {
-    name: "Income",
+    name: "Charts",
     path: ROUTES.income,
-    icon: WalletIcon,
+    icon: PieChartIcon,
   },
 ];
 
@@ -27,7 +27,7 @@ const RIGHT_ITEMS = [
   {
     name: "Reports",
     path: ROUTES.reports,
-    icon: PieChartIcon,
+    icon: FileBarChartIcon,
   },
   {
     name: "Profile",
@@ -42,44 +42,41 @@ interface BottomNavProps {
 }
 
 /**
- * Mobile bottom navigation bar with a centered FAB (+) button.
- * The FAB only appears on the Income page and fires onFabClick.
- * Always visible at the bottom of the screen.
+ * Mobile bottom navigation bar matching the Stitch design.
+ * Features a frosted glass background, 4 tab items, and a
+ * permanently elevated FAB (+) button in the center.
  */
 export function BottomNav({ onFabClick }: BottomNavProps) {
-  const location = useLocation();
-  const showFab = location.pathname === ROUTES.income;
-
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-safe">
+    <nav
+      aria-label="Bottom Navigation"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur-md pb-safe"
+    >
       <div className="mx-auto max-w-md">
-        <ul className="flex h-16 items-center justify-around px-2">
+        <ul className="flex h-16 items-center justify-between px-6">
           {/* Left nav items */}
           {LEFT_ITEMS.map((item) => (
             <NavItem key={item.name} {...item} />
           ))}
 
-          {/* Centered FAB */}
+          {/* Centered Elevated FAB (+) */}
           <li className="flex-1">
             <div className="flex items-center justify-center">
-              {showFab ? (
-                <button
-                  type="button"
-                  onClick={onFabClick}
-                  className={cn(
-                    "relative -mt-8 flex size-14 items-center justify-center rounded-full",
-                    "bg-amber-300 text-amber-900 shadow-lg",
-                    "transition-all duration-200 hover:bg-amber-400 hover:shadow-xl",
-                    "active:scale-95 active:shadow-md"
-                  )}
-                  aria-label="Add income"
-                >
-                  <PlusIcon className="size-7" strokeWidth={2.5} />
-                </button>
-              ) : (
-                /* Empty spacer when FAB is hidden so items stay balanced */
-                <div className="size-14" />
-              )}
+              <button
+                type="button"
+                onClick={onFabClick}
+                className={cn(
+                  "relative -mt-8 flex size-14 items-center justify-center rounded-full",
+                  "border-4 border-background bg-amber-300 text-slate-900 shadow-lg",
+                  "transition-all duration-200 hover:scale-105 hover:bg-amber-400 hover:shadow-xl",
+                  "active:scale-95 active:shadow-md",
+                  /* Yellow glow effect */
+                  "shadow-amber-300/40"
+                )}
+                aria-label="Add new entry"
+              >
+                <PlusIcon className="size-7" strokeWidth={2.8} />
+              </button>
             </div>
           </li>
 
@@ -93,7 +90,7 @@ export function BottomNav({ onFabClick }: BottomNavProps) {
   );
 }
 
-/** Single nav item extracted to reduce duplication. */
+/** Single nav item with active-state styling matching the Stitch design. */
 function NavItem({
   name,
   path,
@@ -109,10 +106,10 @@ function NavItem({
         to={path}
         className={({ isActive }) =>
           cn(
-            "flex flex-col items-center justify-center gap-1 rounded-xl py-2 text-[0.625rem] font-medium transition-colors",
+            "flex flex-col items-center justify-center gap-1 rounded-xl py-2 transition-colors",
             isActive
-              ? "text-primary"
-              : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+              ? "text-emerald-600 dark:text-emerald-400"
+              : "text-muted-foreground hover:text-foreground"
           )
         }
       >
@@ -120,18 +117,27 @@ function NavItem({
           <>
             <div
               className={cn(
-                "grid size-8 place-items-center rounded-full transition-all duration-300",
-                isActive ? "bg-primary/10" : "bg-transparent"
+                "grid size-8 place-items-center rounded-xl transition-all duration-200",
+                isActive
+                  ? "bg-emerald-50 dark:bg-emerald-900/30"
+                  : "bg-transparent"
               )}
             >
               <Icon
                 className={cn(
-                  "size-5 transition-transform duration-300",
-                  isActive && "scale-110"
+                  "size-5",
+                  isActive && "stroke-[2.3]"
                 )}
               />
             </div>
-            <span>{name}</span>
+            <span
+              className={cn(
+                "text-[11px] tracking-tight",
+                isActive ? "font-bold" : "font-medium"
+              )}
+            >
+              {name}
+            </span>
           </>
         )}
       </NavLink>

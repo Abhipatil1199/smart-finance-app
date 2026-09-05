@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { BentoTotalIncome } from "@/features/income/components/bento-total-income";
 import { BentoThisMonth } from "@/features/income/components/bento-this-month";
@@ -11,7 +11,6 @@ import { IncomeCardList } from "@/features/income/components/income-card-list";
 import { IncomeFormDialog } from "@/features/income/components/income-form-dialog";
 import { DeleteConfirmDialog } from "@/features/income/components/delete-confirm-dialog";
 import { useIncomeState } from "@/features/income/hooks/use-income-state";
-import { useFabRegistration } from "@/layouts/app-layout";
 import type { IncomeRecord } from "@/features/income/types/income.types";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -46,10 +45,6 @@ export function IncomePage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<IncomeRecord | null>(null);
 
-  const handleAddClick = () => {
-    setEditRecord(undefined);
-    setFormOpen(true);
-  };
 
   const handleEdit = (record: IncomeRecord) => {
     setEditRecord(record);
@@ -83,15 +78,7 @@ export function IncomePage() {
     }
   };
 
-  /* ── Register the FAB handler ──────────────────────────────────────── */
-
-  const { registerFabHandler } = useFabRegistration();
-
-  useEffect(() => {
-    registerFabHandler(handleAddClick);
-    return () => registerFabHandler(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registerFabHandler]);
+  /* ── FAB Handler handled globally by Stitch modal ─────────────────── */
 
   /* ── Render ────────────────────────────────────────────────────────── */
 

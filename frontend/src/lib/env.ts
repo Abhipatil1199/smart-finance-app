@@ -9,7 +9,7 @@ function readString(value: unknown, fallback: string): string {
   return typeof value === "string" && value.length > 0 ? value : fallback;
 }
 
-function readBoolean(value: unknown, fallback: boolean): boolean {
+export function readBoolean(value: unknown, fallback: boolean): boolean {
   if (value === "true") return true;
   if (value === "false") return false;
   return fallback;

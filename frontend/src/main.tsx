@@ -3,8 +3,6 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 import "./index.css";
-import { env } from "@/lib/env";
-import api from "@/services/api/axios";
 import { AppProviders } from "@/app/providers/app-providers";
 import { router } from "@/app/router";
 

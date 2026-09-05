@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 
 import { cn } from "@/lib/utils";
@@ -12,14 +11,21 @@ const DropdownMenuGroupLabel = MenuPrimitive.GroupLabel;
 
 /* ─── Content ──────────────────────────────────────────────────────────── */
 
+interface DropdownMenuContentProps extends MenuPrimitive.Popup.Props {
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+}
+
 function DropdownMenuContent({
   className,
   children,
+  align = "end",
+  sideOffset = 6,
   ...props
-}: MenuPrimitive.Popup.Props) {
+}: DropdownMenuContentProps) {
   return (
     <MenuPrimitive.Portal>
-      <MenuPrimitive.Positioner sideOffset={6} align="end">
+      <MenuPrimitive.Positioner sideOffset={sideOffset} align={align}>
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-content"
           className={cn(

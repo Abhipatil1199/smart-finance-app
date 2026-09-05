@@ -12,10 +12,13 @@ export type IncomeFrequency =
 
 export interface Income {
   id: number;
-  amount: number;
+  amount: number | string;
   source: string;
+  description?: string | null;
+  type?: string;
   frequency: IncomeFrequency;
   date: string;
+  userId?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -25,6 +28,7 @@ export interface CreateIncomeRequest {
   source: string;
   frequency: IncomeFrequency;
   date: string;
+  description?: string;
 }
 
 export interface UpdateIncomeRequest {
@@ -32,6 +36,7 @@ export interface UpdateIncomeRequest {
   source?: string;
   frequency?: IncomeFrequency;
   date?: string;
+  description?: string;
 }
 
 // Keep the existing types used by the mock UI/analytics components to ensure compilation

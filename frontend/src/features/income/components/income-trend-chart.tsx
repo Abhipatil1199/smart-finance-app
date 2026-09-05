@@ -17,8 +17,8 @@ interface IncomeTrendChartProps {
 export function IncomeTrendChart({ data, className }: IncomeTrendChartProps) {
   const gradientId = useId();
 
-  const { pathD, areaD, points, maxY } = useMemo(() => {
-    if (data.length === 0) return { pathD: "", areaD: "", points: [], maxY: 0 };
+  const { pathD, areaD, points } = useMemo(() => {
+    if (data.length === 0) return { pathD: "", areaD: "", points: [] };
 
     const maxAmount = Math.max(...data.map((d) => d.amount));
     // Add 20% headroom so the top point doesn't clip

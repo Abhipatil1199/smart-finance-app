@@ -30,11 +30,11 @@ export function useIncomeState() {
     return incomes.map((inc) => ({
       id: String(inc.id),
       source: inc.source,
-      amount: inc.amount,
+      amount: Number(inc.amount) || 0,
       frequency: inc.frequency,
       category: "other", // Fallback, backend doesn't have category yet
       date: inc.date,
-      description: "",
+      description: inc.description || "",
     }));
   }, [incomes]);
 

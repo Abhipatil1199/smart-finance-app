@@ -1,120 +1,82 @@
-import {
-  LogOutIcon,
-  MonitorSmartphoneIcon,
-  WalletIcon,
-  ArrowRightIcon,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
 
+import { CategoryTabs } from "@/features/dashboard/components/category-tabs";
+import type { TabFilter } from "@/features/dashboard/components/category-tabs";
+import { MonthOverviewCard } from "@/features/dashboard/components/month-overview-card";
+import { TransactionTimeline } from "@/features/dashboard/components/transaction-timeline";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { BrandMark } from "@/components/common/brand-mark";
-import { ThemeToggle } from "@/components/common/theme-toggle";
-import { useAuth } from "@/features/auth/hooks/use-auth";
-import { useSignoutMutation } from "@/features/auth/hooks/use-signout-mutation";
-import { useLogoutAllMutation } from "@/features/auth/hooks/use-logout-all-mutation";
+  MOCK_TRANSACTIONS,
+  subscribeTransactions,
+} from "@/features/dashboard/data/mock-transactions";
+import type { MonthSummary } from "@/features/dashboard/types/transaction.types";
+import { useIncomes } from "@/features/income/hooks/useIncome";
 
 /**
- * Placeholder landing surface so the auth flow has somewhere to finish.
- * Replace with the real dashboard feature; the route and guard stay as-is.
+ * Dashboard home page — matches the Stitch "Home with Sliding Tab Navigation"
+ * design. Composes category tabs, a dark summary card, and a date-grouped
+ * transaction timeline displaying live backend incomes.
  */
 export function DashboardPage() {
-  const { user } = useAuth();
-  const signoutMutation = useSignoutMutation();
-  const logoutAllMutation = useLogoutAllMutation();
+  const [activeTab, setActiveTab] = useState<TabFilter>("overview");
+  const [, setTick] = useState(0);
 
-  const isBusy = signoutMutation.isPending || logoutAllMutation.isPending;
+  // Subscribe to local mock transactions (expenses & transfers)
+  useEffect(() => {
+    return subscribeTransactions(() => setTick((t) => t + 1));
+  }, []);
+
+  // Live incomes from backend API (GET /api/incomes)
+  const { data: incomes = [] } = useIncomes();
+
+  // Dynamic Month Summary derived from live incomes and local expenses
+  const summary: MonthSummary = useMemo(() => {
+    const totalIncome = incomes.reduce(
+      (sum, inc) => sum + (Number(inc.amount) || 0),
+      0
+    );
+
+    const totalExpenses = MOCK_TRANSACTIONS
+      .filter((t) => t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const netBalance = totalIncome - totalExpenses;
+    const now = new Date();
+    const month = now.toLocaleDateString("en-IN", { month: "short" });
+    const year = now.getFullYear();
+
+    return {
+      month,
+      year,
+      netBalance,
+      totalIncome,
+      totalExpenses,
+      trendPercentage: 12.4,
+      balanceStatus: netBalance >= 0 ? "surplus" : "deficit",
+    };
+  }, [incomes]);
 
   return (
-    <div className="min-h-screen-safe bg-background px-safe">
-      <header className="flex items-center justify-between gap-3 px-5 pt-safe sm:px-8">
-        <div className="flex h-16 items-center">
-          <BrandMark />
-        </div>
-        <div className="flex h-16 items-center gap-1">
-          <ThemeToggle />
-          <Button
-            type="button"
-            variant="outline"
-            size="xl"
-            disabled={isBusy}
-            onClick={() => signoutMutation.mutate()}
-          >
-            {signoutMutation.isPending ? (
-              <Spinner />
-            ) : (
-              <LogOutIcon className="size-4" />
-            )}
-            Sign out
-          </Button>
-        </div>
-      </header>
+    <div className="flex w-full flex-col">
+      {/* ── Sliding Category Tabs ────────────────────────────────────── */}
+      <CategoryTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-5 py-10 sm:px-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">
-              You're signed in{user ? `, ${user.firstName}` : ""}.
-            </CardTitle>
-            <CardDescription>
-              Authentication works end to end. The dashboard feature plugs in
-              here.
-            </CardDescription>
-          </CardHeader>
-          {user ? (
-            <CardContent>
-              <dl className="grid gap-3 text-sm sm:grid-cols-[8rem_1fr]">
-                <dt className="text-muted-foreground">Name</dt>
-                <dd className="font-medium">
-                  {user.firstName} {user.lastName}
-                </dd>
-                <dt className="text-muted-foreground">Email</dt>
-                <dd className="font-medium break-all">{user.email}</dd>
-                <dt className="text-muted-foreground">Member since</dt>
-                <dd className="font-medium">
-                  {new Date(user.createdAt).toLocaleDateString(undefined, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </dd>
-              </dl>
-            </CardContent>
-          ) : null}
-        </Card>
+      {/* ── Main Content ─────────────────────────────────────────────── */}
+      <div className="flex-1 space-y-4 overflow-y-auto px-5 pt-4 pb-6">
+        {/* Month Overview Summary Card with live totals and filtered income view */}
+        <MonthOverviewCard
+          summary={summary}
+          activeTab={activeTab}
+          incomeEntriesCount={incomes.length}
+          averageIncome={
+            incomes.length > 0
+              ? Math.round(summary.totalIncome / incomes.length)
+              : 0
+          }
+        />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Session Management</CardTitle>
-            <CardDescription>
-              Sign out from all devices at once. This revokes every active
-              session.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button
-              type="button"
-              variant="destructive"
-              disabled={isBusy}
-              onClick={() => logoutAllMutation.mutate()}
-            >
-              {logoutAllMutation.isPending ? (
-                <Spinner />
-              ) : (
-                <MonitorSmartphoneIcon className="size-4" />
-              )}
-              Sign out all devices
-            </Button>
-          </CardContent>
-        </Card>
-      </main>
+        {/* Date-Grouped Transaction Timeline with live incomes */}
+        <TransactionTimeline activeTab={activeTab} />
+      </div>
     </div>
   );
 }
